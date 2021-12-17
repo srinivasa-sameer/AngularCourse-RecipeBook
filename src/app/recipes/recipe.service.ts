@@ -1,15 +1,19 @@
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { Subject } from "rxjs";
 
 import { Ingredient } from "../shared/ingredient.model";
 import { ShoppingListService } from "../shopping-list/shopping-list.service";
 import { Recipe } from "./recipe.model";
 
+import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
+import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
+
 @Injectable()
 export class RecipeService{
 
   recipesChanged = new Subject<Recipe[]>();
-  
+
   // private recipes: Recipe[] = [
   //       new Recipe(
   //         'Paneer Fried Rice',
@@ -23,7 +27,7 @@ export class RecipeService{
   //         ]),
   //       new Recipe(
   //         'Pav Bhaji',
-  //         'A very tasty snack', 
+  //         'A very tasty snack',
   //         'https://www.cubesnjuliennes.com/wp-content/uploads/2020/07/Instant-Pot-Mumbai-Pav-Bhaji-Recipe.jpg',
   //         [
   //           new Ingredient('Pav', 4),
@@ -34,7 +38,8 @@ export class RecipeService{
 
   private recipes: Recipe[] = [];
 
-      constructor(private slService: ShoppingListService){
+      constructor(//private slService: ShoppingListService,
+         private store:  Store<fromShoppingList.AppState>){
 
       }
 
@@ -52,7 +57,8 @@ export class RecipeService{
       }
 
       addIngredientsToShoppingList(ingredients: Ingredient[]){
-        this.slService.addIngredients(ingredients);
+        //this.slService.addIngredients(ingredients);
+        this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
       }
 
       addRecipe(recipe: Recipe){
